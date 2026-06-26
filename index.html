@@ -138,6 +138,12 @@
   .wd.today .n{color:#6B3FA0;font-weight:700}
   .wd.sel{background:#6B3FA0}
   .wd.sel .l,.wd.sel .n{color:#fff}
+  .task-note-btn{flex:none;background:none;border:none;color:var(--faint);cursor:pointer;padding:2px 5px;opacity:.5;transition:opacity .2s;display:flex;align-items:center}
+  .task-note-btn:hover{opacity:1;color:#6B3FA0}
+  .day-note{font-size:.82rem;color:#6B3FA0;font-style:italic;margin-top:.3rem;line-height:1.4}
+  .dn-edit{margin-top:.4rem}
+  .dn-input{width:100%;border:1px solid var(--line);border-radius:9px;padding:.45rem .65rem;font-family:var(--ui);font-size:.85rem;color:var(--ink);background:#fff}
+  .dn-input:focus{outline:none;border-color:#6B3FA0}
 </style>
 </head>
 <body>
@@ -251,15 +257,20 @@
   function defaults(){ return {tasks:[],goals:[],seq:0,gseq:0,v:DATA_VERSION}; }
 
   // ---- Storage ----
-  var DATA, DONE, DATA_VERSION=4;
+  var DATA, DONE, NOTES, DATA_VERSION=4;
   function load(){
     try{ var m=(location.hash||"").match(/d=([^&]+)/); if(m && !localStorage.getItem("tori-routine-data")){ var imp=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if(imp&&imp.tasks) localStorage.setItem("tori-routine-data",JSON.stringify(imp)); } }catch(e){}
     try{DATA=JSON.parse(localStorage.getItem('tori-routine-data'));}catch(e){DATA=null;}
     try{DONE=JSON.parse(localStorage.getItem('tori-routine-done'))||{};}catch(e){DONE={};}
+    try{NOTES=JSON.parse(localStorage.getItem('tori-routine-notes'))||{};}catch(e){NOTES={};}
     if(!DATA||!DATA.tasks||!DATA.v||DATA.v<DATA_VERSION){DATA=defaults();save();DONE={};saveDone();}
   }
   function save(){localStorage.setItem('tori-routine-data',JSON.stringify(DATA));}
   function saveDone(){localStorage.setItem('tori-routine-done',JSON.stringify(DONE));}
+  function saveNotes(){localStorage.setItem('tori-routine-notes',JSON.stringify(NOTES));}
+  function noteKey(id){return id+':'+viewKey;}
+  function getDayNote(id){return (NOTES&&NOTES[noteKey(id)])||'';}
+  function setDayNote(id,txt){txt=(txt||'').trim();if(txt)NOTES[noteKey(id)]=txt;else delete NOTES[noteKey(id)];saveNotes();}
 
   // ---- Recurrence ----
   function dueToday(t){
@@ -296,6 +307,7 @@
   var goalsEl=document.getElementById('goalsWrap');
 
   function checkSvg(){return '<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';}
+  function noteSvg(){return '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h9l5 5v11H5z"/><path d="M14 4v6h6"/><path d="M8.5 13h6M8.5 16.5h4"/></svg>';}
   function esc(s){return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
   function render(){
@@ -311,13 +323,25 @@
       list.forEach(function(t){
         dailyIds.push(t.id);
         var note=dynNote(t);
+        var dn=getDayNote(t.id);
         var row=document.createElement('div');row.className='task'+(isDone(t.id)?' checked':'');
         row.innerHTML='<span class="box">'+checkSvg()+'</span>'+
-          '<div class="task-body"><div class="task-label">'+esc(t.title)+'</div>'+(note?'<div class="task-note">'+esc(note)+'</div>':'')+'</div>'+
+          '<div class="task-body"><div class="task-label">'+esc(t.title)+'</div>'+
+          (note?'<div class="task-note">'+esc(note)+'</div>':'')+
+          '<div class="day-note"'+(dn?'':' style="display:none"')+'>'+esc(dn)+'</div>'+
+          '<div class="dn-edit" style="display:none"><input class="dn-input" type="text" placeholder="Note just for this day…"></div>'+
+          '</div>'+
+          '<button class="task-note-btn" title="Note for this day">'+noteSvg()+'</button>'+
           '<button class="task-edit" title="Edit">✎</button>';
+        var dnEdit=row.querySelector('.dn-edit'),dnInput=row.querySelector('.dn-input'),dnDisp=row.querySelector('.day-note');
+        dnInput.value=dn;
         row.querySelector('.box').addEventListener('click',function(){toggle(t.id,row);});
-        row.querySelector('.task-body').addEventListener('click',function(){toggle(t.id,row);});
+        row.querySelector('.task-body').addEventListener('click',function(e){if(e.target.closest('.dn-edit'))return;toggle(t.id,row);});
         row.querySelector('.task-edit').addEventListener('click',function(e){e.stopPropagation();openModal(t);});
+        row.querySelector('.task-note-btn').addEventListener('click',function(e){e.stopPropagation();dnDisp.style.display='none';dnEdit.style.display='block';dnInput.focus();});
+        function commitNote(){setDayNote(t.id,dnInput.value);var nv=getDayNote(t.id);dnDisp.textContent=nv;dnDisp.style.display=nv?'block':'none';dnEdit.style.display='none';}
+        dnInput.addEventListener('blur',commitNote);
+        dnInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();dnInput.blur();}});
         card.appendChild(row);
       });
       todayEl.appendChild(card);
