@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tori's Daily Routine</title>
+<title>Purr Planner</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Routine">
+<meta name="apple-mobile-web-app-title" content="Purr Planner">
 <meta name="theme-color" content="#FBF6EF">
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -108,15 +108,46 @@
   footer{text-align:center;margin-top:1.6rem;color:var(--faint);font-size:.72rem;letter-spacing:.06em}
   footer .gem{display:inline-block;width:6px;height:6px;background:var(--gold);transform:rotate(45deg);margin:0 .5rem;vertical-align:middle}
   @media(max-width:420px){header h1{font-size:2.5rem}.cat{padding:1rem .95rem .5rem}}
+
+  .cats{max-width:240px;margin:0 auto;display:block}
+  .cats svg{width:100%;height:auto;display:block}
+  header h1.brand{margin:.2rem 0 .5rem}
+  .paw{width:17px;height:17px;flex:none}
+
+  .logo{display:block;width:100%;max-width:290px;height:auto;margin:0 auto .4rem}
+  /* ---- match logo: purple + gold + cream ---- */
+  body{background:
+    radial-gradient(ellipse 60% 30% at 82% 0%, rgba(150,110,190,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 0% 100%, rgba(194,160,91,.16) 0%, transparent 55%),
+    #FBF6EF}
+  .greeting{color:#6B3FA0}
+  .progress-count{color:#6B3FA0}
+  .bar-fill{background:linear-gradient(90deg,#E6D2A2,#8857B8 70%,#6B3FA0)}
+  .done-msg{color:#6B3FA0}
+  .task.checked .box{background:#6B3FA0;border-color:#6B3FA0}
+  .task.checked .task-label{text-decoration-color:rgba(107,63,160,.55)}
+  .box{border-color:rgba(107,63,160,.45)}
+  .fab{background:linear-gradient(135deg,#7E50B0,#5E3687);color:#fff}
+  .goal-btn:hover,.add-row button{background:#6B3FA0}
+  .goal-btn{color:#6B3FA0}
+  .help-link,.pet-type{}
+  .weekstrip{display:flex;justify-content:center;gap:.3rem;margin:.7rem auto 0;max-width:360px}
+  .wd{flex:1;min-width:0;border:none;background:transparent;cursor:pointer;border-radius:14px;padding:.4rem .1rem;display:flex;flex-direction:column;align-items:center;gap:.12rem;font-family:var(--ui);transition:background .2s}
+  .wd .l{font-size:.58rem;letter-spacing:.04em;text-transform:uppercase;color:var(--faint)}
+  .wd .n{font-size:.92rem;color:var(--ink);font-weight:500;line-height:1}
+  .wd.today .n{color:#6B3FA0;font-weight:700}
+  .wd.sel{background:#6B3FA0}
+  .wd.sel .l,.wd.sel .n{color:#fff}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
+    <img class="logo" src="logo.png" alt="Purr Planner">
     <div class="greeting" id="greeting">Good morning, Tori</div>
-    <h1>Today</h1>
     <div class="today-date" id="date"></div>
     <div class="today-day" id="weekday"></div>
+    <div class="weekstrip" id="weekstrip"></div>
   </header>
 
   <div class="progress-wrap">
@@ -187,6 +218,7 @@
 <script>
 (function(){
   "use strict";
+  function pawIcon(c){return "<svg class=\"paw\" viewBox=\"0 0 24 24\" fill=\""+c+"\"><ellipse cx=\"12\" cy=\"15.5\" rx=\"6\" ry=\"5\"/><ellipse cx=\"5.5\" cy=\"9.5\" rx=\"2.4\" ry=\"3.1\"/><ellipse cx=\"10\" cy=\"6.5\" rx=\"2.5\" ry=\"3.3\"/><ellipse cx=\"14\" cy=\"6.5\" rx=\"2.5\" ry=\"3.3\"/><ellipse cx=\"18.5\" cy=\"9.5\" rx=\"2.4\" ry=\"3.1\"/></svg>";}
 
   var CATEGORIES = [
     {name:'Spiritual',color:'#C2A05B'},
@@ -209,6 +241,8 @@
   function pad(n){return n<10?'0'+n:''+n;}
   function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
   var todayStr=ymd(now);
+  var viewDate=new Date(now), viewDow=dow, viewKey=todayStr;
+  var dayMini=['Su','Mo','Tu','We','Th','Fr','Sa'];
   function parseYmd(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
   function daysBetween(a,b){return Math.round((parseYmd(ymd(b))-parseYmd(ymd(a)))/86400000);}
   function addMonths(d,n){var x=new Date(d.getTime());x.setMonth(x.getMonth()+n);return x;}
@@ -220,8 +254,8 @@
   var DATA, DONE, DATA_VERSION=4;
   function load(){
     try{ var m=(location.hash||"").match(/d=([^&]+)/); if(m && !localStorage.getItem("tori-routine-data")){ var imp=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); if(imp&&imp.tasks) localStorage.setItem("tori-routine-data",JSON.stringify(imp)); } }catch(e){}
-    try{DATA=JSON.parse(localStorage.getItem("tori-routine-data"));}catch(e){DATA=null;}
-    try{DONE=JSON.parse(localStorage.getItem("tori-routine-done"))||{};}catch(e){DONE={};}
+    try{DATA=JSON.parse(localStorage.getItem('tori-routine-data'));}catch(e){DATA=null;}
+    try{DONE=JSON.parse(localStorage.getItem('tori-routine-done'))||{};}catch(e){DONE={};}
     if(!DATA||!DATA.tasks||!DATA.v||DATA.v<DATA_VERSION){DATA=defaults();save();DONE={};saveDone();}
   }
   function save(){localStorage.setItem('tori-routine-data',JSON.stringify(DATA));}
@@ -230,8 +264,8 @@
   // ---- Recurrence ----
   function dueToday(t){
     if(t.rep==='daily')return true;
-    if(t.rep==='weekdays')return (t.days||[]).indexOf(dow)!==-1;
-    if(t.rep==='everyDays'){var n=Math.max(1,+t.n||1);var s=t.start?parseYmd(t.start):now;return daysBetween(s,now)%n===0;}
+    if(t.rep==='weekdays')return (t.days||[]).indexOf(viewDow)!==-1;
+    if(t.rep==='everyDays'){var n=Math.max(1,+t.n||1);var s=t.start?parseYmd(t.start):now;return daysBetween(s,viewDate)%n===0;}
     return false; // everyMonths & once handled separately
   }
   function upkeepDue(t){
@@ -247,12 +281,12 @@
   }
   function dynNote(t){
     if(!t.dynamicSkin)return t.note||'';
-    return (dow===1||dow===4)
+    return (viewDow===1||viewDow===4)
       ? "Paula's Choice BHA · Byoma Milky Toner · Mary & May Eye Cream · Byoma Gel Cream"
       : "Byoma Milky Toner · Anua Azelaic Acid · Mary & May Eye Cream · Byoma Gel Cream";
   }
 
-  function doneKey(id){return id+':'+todayStr;}
+  function doneKey(id){return id+':'+viewKey;}
   function isDone(id){return !!DONE[doneKey(id)];}
   function setDoneState(id,v){if(v)DONE[doneKey(id)]=1;else delete DONE[doneKey(id)];saveDone();}
 
@@ -273,7 +307,7 @@
       var list=DATA.tasks.filter(function(t){return t.cat===c.name && dueToday(t);});
       if(!list.length)return;
       var card=document.createElement('section');card.className='cat';
-      card.innerHTML='<div class="cat-head"><span class="dot" style="background:'+c.color+'"></span><h2>'+esc(c.name)+'</h2></div>';
+      card.innerHTML='<div class="cat-head">'+pawIcon(c.color)+'<h2>'+esc(c.name)+'</h2></div>';
       list.forEach(function(t){
         dailyIds.push(t.id);
         var note=dynNote(t);
@@ -289,13 +323,13 @@
       todayEl.appendChild(card);
     });
 
-    // upkeep / due now (everyMonths + once)
-    var due=DATA.tasks.filter(function(t){return (t.rep==='everyMonths'||t.rep==='once') && upkeepDue(t);});
+    // upkeep / due now (everyMonths + once) — only on today's view
+    var due=(viewKey===todayStr)?DATA.tasks.filter(function(t){return (t.rep==='everyMonths'||t.rep==='once') && upkeepDue(t);}):[];
     if(due.length){
       var wrap=document.createElement('div');wrap.className='upkeep';
       wrap.innerHTML='<div class="section-title">Due now · upkeep</div>';
       var card=document.createElement('section');card.className='cat';
-      card.innerHTML='<div class="cat-head"><span class="dot" style="background:#B79B86"></span><h2>Time to do</h2></div>';
+      card.innerHTML='<div class="cat-head"><svg class="paw" viewBox="0 0 24 24" fill="#B79B86"><ellipse cx="12" cy="15.5" rx="6" ry="5"/><ellipse cx="5.5" cy="9.5" rx="2.4" ry="3.1"/><ellipse cx="10" cy="6.5" rx="2.5" ry="3.3"/><ellipse cx="14" cy="6.5" rx="2.5" ry="3.3"/><ellipse cx="18.5" cy="9.5" rx="2.4" ry="3.1"/></svg><h2>Time to do</h2></div>';
       due.forEach(function(t){
         var row=document.createElement('div');row.className='task';
         row.innerHTML='<span class="box">'+checkSvg()+'</span>'+
@@ -313,7 +347,7 @@
     var gwrap=document.createElement('div');
     gwrap.innerHTML='<div class="section-title">Goals on standby</div>';
     var gcard=document.createElement('section');gcard.className='cat';
-    gcard.innerHTML='<div class="cat-head"><span class="dot" style="background:#C2A05B"></span><h2>When you\'re ready</h2></div>';
+    gcard.innerHTML='<div class="cat-head"><svg class="paw" viewBox="0 0 24 24" fill="#C2A05B"><ellipse cx="12" cy="15.5" rx="6" ry="5"/><ellipse cx="5.5" cy="9.5" rx="2.4" ry="3.1"/><ellipse cx="10" cy="6.5" rx="2.5" ry="3.3"/><ellipse cx="14" cy="6.5" rx="2.5" ry="3.3"/><ellipse cx="18.5" cy="9.5" rx="2.4" ry="3.1"/></svg><h2>When you\'re ready</h2></div>';
     DATA.goals.forEach(function(g){
       var row=document.createElement('div');row.className='goal'+(g.done?' done':'');
       row.innerHTML='<span class="goal-label">'+esc(g.title)+'</span>'+
@@ -424,12 +458,37 @@
     if(editing){DATA.tasks=DATA.tasks.filter(function(x){return x.id!==editing.id;});save();closeModal();render();}
   });
 
+  // ---- Week strip + day view ----
+  var stripEl=document.getElementById('weekstrip');
+  function weekDates(){
+    var sun=new Date(now.getFullYear(),now.getMonth(),now.getDate()-dow);
+    var arr=[];for(var i=0;i<7;i++){arr.push(new Date(sun.getFullYear(),sun.getMonth(),sun.getDate()+i));}return arr;
+  }
+  function buildStrip(){
+    stripEl.innerHTML='';
+    weekDates().forEach(function(d){
+      var b=document.createElement('button');b.className='wd';
+      if(ymd(d)===todayStr)b.classList.add('today');
+      if(ymd(d)===viewKey)b.classList.add('sel');
+      b.innerHTML='<span class="l">'+dayMini[d.getDay()]+'</span><span class="n">'+d.getDate()+'</span>';
+      b.addEventListener('click',function(){setView(d);});
+      stripEl.appendChild(b);
+    });
+  }
+  function updateHeaderForView(){
+    document.getElementById('date').textContent=monthNames[viewDate.getMonth()]+' '+viewDate.getDate()+', '+viewDate.getFullYear();
+    document.getElementById('weekday').textContent=(viewKey===todayStr?'Today · ':'')+dayNames[viewDow];
+    var pl=document.querySelector('.progress-label');if(pl)pl.textContent=(viewKey===todayStr?"Today's progress":dayNames[viewDow]+"'s list");
+  }
+  function setView(d){
+    viewDate=d;viewDow=d.getDay();viewKey=ymd(d);
+    updateHeaderForView();buildStrip();render();
+  }
+
   // ---- Header ----
   var hr=now.getHours();
   document.getElementById('greeting').textContent=hr<12?'Good morning, Tori':hr<17?'Good afternoon, Tori':'Good evening, Tori';
-  document.getElementById('date').textContent=monthNames[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
-  document.getElementById('weekday').textContent=dayNames[dow];
-
+  updateHeaderForView();buildStrip();
   load();render();
 })();
 </script>

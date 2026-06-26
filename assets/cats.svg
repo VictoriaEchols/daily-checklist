@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 92" width="250" height="92" fill="none">
+  <defs>
+    <linearGradient id="crown" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F0DDA8"/><stop offset="1" stop-color="#C2A05B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ===== Kyoto — brown tabby (left) ===== -->
+  <g transform="translate(8,26) scale(0.8)">
+    <path d="M12,26 L17,4 L33,20 Z" fill="#B0855F"/>
+    <path d="M52,26 L47,4 L31,20 Z" fill="#B0855F"/>
+    <path d="M17,23 L20,9 L29,20 Z" fill="#EAC9AF"/>
+    <path d="M47,23 L44,9 L35,20 Z" fill="#EAC9AF"/>
+    <circle cx="32" cy="36" r="28" fill="#B0855F"/>
+    <g stroke="#83624A" stroke-width="2.4" stroke-linecap="round">
+      <path d="M28,15 L29,27"/><path d="M32,13 L32,27"/><path d="M36,15 L35,27"/>
+      <path d="M9,33 L2,31"/><path d="M9,40 L2,42"/>
+    </g>
+    <g fill="#3A2330"><ellipse cx="22" cy="37" rx="3" ry="4"/><ellipse cx="42" cy="37" rx="3" ry="4"/></g>
+    <g fill="#fff" opacity="0.85"><circle cx="23.2" cy="35.6" r="1"/><circle cx="43.2" cy="35.6" r="1"/></g>
+    <path d="M29,45 L35,45 L32,49 Z" fill="#DC8FAD"/>
+    <path d="M32,49 q-3,4 -6.5,1.5 M32,49 q3,4 6.5,1.5" stroke="#83624A" stroke-width="1.6" stroke-linecap="round"/>
+    <g stroke="#7A6258" stroke-width="1.3" stroke-linecap="round" opacity="0.6"><path d="M20,44 L4,41"/><path d="M20,47 L4,48"/><path d="M44,44 L60,41"/><path d="M44,47 L60,48"/></g>
+  </g>
+
+  <!-- ===== Kyojin — orange tabby prince (center, crowned) ===== -->
+  <g transform="translate(86,8) scale(1.02)">
+    <!-- crown -->
+    <g transform="translate(0,-3)">
+      <path d="M20,12 L22,1 L27,7 L32,-3 L37,7 L42,1 L44,12 Z" fill="url(#crown)"/>
+      <circle cx="22" cy="0.5" r="1.7" fill="url(#crown)"/><circle cx="32" cy="-4" r="2" fill="url(#crown)"/><circle cx="42" cy="0.5" r="1.7" fill="url(#crown)"/>
+    </g>
+    <path d="M12,28 L17,8 L33,22 Z" fill="#EC9A52"/>
+    <path d="M52,28 L47,8 L31,22 Z" fill="#EC9A52"/>
+    <path d="M17,25 L20,12 L29,22 Z" fill="#F7D3A6"/>
+    <path d="M47,25 L44,12 L35,22 Z" fill="#F7D3A6"/>
+    <circle cx="32" cy="38" r="28" fill="#EC9A52"/>
+    <g stroke="#CB762F" stroke-width="2.4" stroke-linecap="round">
+      <path d="M28,17 L29,29"/><path d="M32,15 L32,29"/><path d="M36,17 L35,29"/>
+      <path d="M9,35 L2,33"/><path d="M9,42 L2,44"/><path d="M55,35 L62,33"/><path d="M55,42 L62,44"/>
+    </g>
+    <g fill="#3A2330"><ellipse cx="22" cy="39" rx="3.1" ry="4.2"/><ellipse cx="42" cy="39" rx="3.1" ry="4.2"/></g>
+    <g fill="#fff" opacity="0.9"><circle cx="23.3" cy="37.5" r="1.05"/><circle cx="43.3" cy="37.5" r="1.05"/></g>
+    <path d="M28.5,47 L35.5,47 L32,51 Z" fill="#DC8FAD"/>
+    <path d="M32,51 q-3.2,4 -7,1.5 M32,51 q3.2,4 7,1.5" stroke="#CB762F" stroke-width="1.7" stroke-linecap="round"/>
+    <g stroke="#A9692F" stroke-width="1.3" stroke-linecap="round" opacity="0.55"><path d="M20,46 L3,43"/><path d="M20,49 L3,50"/><path d="M44,46 L61,43"/><path d="M44,49 L61,50"/></g>
+  </g>
+
+  <!-- ===== Kirei — blue-gray angel (right) ===== -->
+  <g transform="translate(170,26) scale(0.8)">
+    <path d="M12,26 L17,4 L33,20 Z" fill="#9DAAB8"/>
+    <path d="M52,26 L47,4 L31,20 Z" fill="#9DAAB8"/>
+    <path d="M17,23 L20,9 L29,20 Z" fill="#DCE3EA"/>
+    <path d="M47,23 L44,9 L35,20 Z" fill="#DCE3EA"/>
+    <circle cx="32" cy="36" r="28" fill="#9DAAB8"/>
+    <g stroke="#7E8C9B" stroke-width="2.2" stroke-linecap="round" opacity="0.8">
+      <path d="M9,33 L2,31"/><path d="M9,40 L2,42"/>
+    </g>
+    <g fill="#3A2330"><ellipse cx="22" cy="37" rx="3" ry="4"/><ellipse cx="42" cy="37" rx="3" ry="4"/></g>
+    <g fill="#fff" opacity="0.9"><circle cx="23.2" cy="35.6" r="1"/><circle cx="43.2" cy="35.6" r="1"/></g>
+    <path d="M29,45 L35,45 L32,49 Z" fill="#DC8FAD"/>
+    <path d="M32,49 q-3,4 -6.5,1.5 M32,49 q3,4 6.5,1.5" stroke="#7E8C9B" stroke-width="1.6" stroke-linecap="round"/>
+    <g stroke="#8995a4" stroke-width="1.3" stroke-linecap="round" opacity="0.6"><path d="M20,44 L4,41"/><path d="M20,47 L4,48"/><path d="M44,44 L60,41"/><path d="M44,47 L60,48"/></g>
+  </g>
+</svg>
